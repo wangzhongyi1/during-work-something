@@ -53,7 +53,7 @@
           }) 
       },
       methods:{
-  		handlePrint() {
+      	handlePrint() {
               if (!this.canClick) return;
               // IE 139.5 其他 145
               let userAgent = navigator.userAgent; //判断浏览器内核
