@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<meta name="description" itemprop="description" content="这是要分享的内容" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.2/theme-chalk/index.css"/>
+		<title>电力行业人才发展服务平台电子名片</title>
+		<style>
+			body {
+				background: #f6f6f6;
+				margin: 0;
+				font-size: 14px;
+			}
+			.pd-5 {
+				padding: 5px 0;
+			}
+			.mt-10 {
+				margin-top: 10px;
+			}
+			.font-12 {
+				font-size: 12px;
+			}
+			.white-box {
+				background: #fff;
+				padding: 10px 20px;
+			}
+			.text-right {
+				text-align: right;
+			}
+			.update-date {
+				font-size: 12px;
+				color: gray;
+				padding: 10px 0;
+			}
+			.my-name {
+				font-size: 16px;
+				font-weight: bold;
+			}
+			i.gender {
+				color: white;
+				padding: 2px;
+				border-radius: 50%;
+			}
+			.gender.el-icon-male {
+				background: #40afff;
+			}
+			.gender.el-icon-female {
+				background: hotpink;
+			}
+			.my-info {
+				font-size: 12px;
+				color: gray;
+			}
+			.orange-icon {
+				color: orange;
+				font-size: 20px;
+				vertical-align: middle;
+			}
+			.info-text {
+				font-size: 12px;
+				margin-left: 8px;
+			}
+			.box-title {
+				position: relative;
+			}
+			.box-title-text {
+				font-size: 14px;
+				margin-left: 10px;
+			}
+			.box-title-text::before {
+				display: inline-block;
+				background: #40AFFF;
+				content: "";
+				width: 2px;
+				height: 16px;
+				position: absolute;
+				top: 1px;
+				left: -6px;
+			}
+			.my-timeline {
+				padding: 0;
+				margin-top: 10px;
+			}
+			.my-timeline .el-timeline-item {
+				padding-bottom: 10px;
+			}
+			.my-timeline .el-timeline-item,
+			.my-timeline .el-timeline-item .el-timeline-item__wrapper .el-timeline-item__timestamp{
+				font-size: 12px;
+			}
+			p.my-desc {
+				margin: 6px 0;
+			}
+			.my-desc {
+				color: #808080;
+			}
+			.gray {
+				color: gray;
+			}
+			.inline-block {
+				display: inline-block;
+				width: 45px;
+				margin-left: 2px;
+			}
+			.footer {
+				font-size: 12px;
+				text-align: center;
+				color: #bbb;
+				padding: 15px 0;
+			}
+			[v-cloak]{
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="app">
+			<template>
+				<div class="white-box">
+					<div class="text-right update-date">
+						更新时间：{{person.updateDate}}
+					</div>
+					<el-row>
+						<el-col :span="6">
+							<el-avatar :size="60" :src="type?personDetail.headPortrait:person.headPortrait" style="margin-top: 10px;"></el-avatar>
+						</el-col>
+						<el-col :span="18">
+							<div class="pd-5">
+								<!-- get -> name   ByLoginName -> username -->
+								<span class="my-name">{{ person.name }}</span>
+								<i v-if="type&&personDetail.sex =='男'" class="el-icon-male gender"></i>
+								<i v-if="type&&personDetail.sex =='女'" class="el-icon-female gender"></i>
+								<i v-if="!type&&person.gender =='男'" class="el-icon-male gender"></i>
+								<i v-if="!type&&person.gender =='女'" class="el-icon-female gender"></i>
+							</div>
+							<div class="pd-5 my-info"  v-if="!type">{{ person.mobile }}</div>
+							<div class="pd-5 my-info">{{personDetail.highestDegree}}</div>
+						</el-col>
+					</el-row>
+					<div style="padding: 6px 0; margin-top: 8px;">
+						<i class="el-icon-office-building orange-icon"></i>
+						<span class="info-text">{{personDetail.group}}</span>
+					</div>
+					<div style="padding: 6px 0;">
+						<i class="el-icon-tickets orange-icon"></i>
+						<span class="info-text">{{personDetail.workType}}</span>
+					</div>
+				</div>
+				<div class="white-box mt-10">
+					<div class="box-title">
+						<span class="box-title-text">工作经历</span>
+						<el-timeline class="my-timeline">
+							<el-timeline-item
+								v-for="(p, i) in personDetail.professionalHistories"
+								:key="i"
+								type="warning"
+								placement="top"
+							> 
+								<div>{{p.startTime | timeFmt}}
+									<span v-if="p.endTime">
+										<span v-if="p.endTime == 0"> —— 至今</span>
+										<span v-else> —— {{p.endTime | timeFmt}}</span>
+									</span>
+								</div>
+								<div style="font-weight: bold; padding: 5px 0;">
+									{{ p.companyName }}
+								</div>
+								<div class="my-desc pd-5">
+									<span>{{ p.position }}</span>
+									<span style="margin-left: 10px;">{{ p.grade }}</span>
+								</div>
+							</el-timeline-item>
+						</el-timeline>
+					</div>
+				</div>
+				<div class="white-box mt-10">
+					<div class="box-title">
+						<span class="box-title-text">教育背景</span>
+						<el-timeline class="my-timeline">
+							<el-timeline-item
+								v-for="(p, i) in personDetail.experiences"
+								:key="'p' + i"
+								type="warning"
+								placement="bottom"
+							>
+							<div class="title">{{p.degreeLevel}}</div>
+							<div>
+								<span>{{p.graduateTime | timeFmt}}</span>
+								<span>毕业于</span>
+								<span>{{p.school}}</span>
+							</div>
+							</el-timeline-item>
+						</el-timeline>
+					</div>
+				</div>
+				<div class="white-box mt-10">
+					<div class="box-title">
+						<span class="box-title-text">获奖情况</span>
+					</div>
+					<div v-for="(p, i) in personDetail.winAwards" :key="'award' + i">
+						<div style="text-align: center; margin: 20px 0 10px 0;">
+							<el-image
+								:src="p.fileid"
+								:preview-src-list="[p.fileid]"
+								style="width: 200px; height: 140px;"
+							></el-image>
+						</div>
+						<p class="font-12" style="margin: 6px 0;">{{ p.name }}</p>
+						<p class="my-desc font-12">奖项级别：{{ p.level }}</p>
+						<p class="my-desc font-12">工种：{{ p.workType }}</p>
+						<p class="my-desc font-12">等级：{{ p.grade }}</p>
+						<p class="my-desc font-12">名次：{{ p.ranking }}</p>
+						<p class="my-desc font-12">获奖情况：{{ p.winAwardInfo }}</p>
+						<p class="my-desc font-12">获证时间：{{p.winTime | timeFmt}}</p>
+						<el-divider v-if="i < awardList.length - 1"/>
+					</div>
+				</div>
+				<div class="white-box mt-10">
+					<div class="box-title">
+						<span class="box-title-text">培训经历</span>
+					</div>
+					<div v-for="(p, i) in personDetail.trainExperiences" :key="'train' + i">
+						<div style="text-align: center; margin: 20px 0 10px 0;">
+							<el-image
+								:src=" p.fileid"
+								:preview-src-list="[ p.fileid ]"
+								style="width: 200px; height: 140px;"
+							></el-image>
+						</div>
+						<p class="font-12" style="margin: 6px 0;">{{ p.name }}</p>
+						<p class="my-desc font-12">{{p.startTime | timeFmt}} —— {{p.endTime | timeFmt}}</p>
+						<p class="my-desc font-12">考试成绩：{{p.result}}</p>
+						<p class="my-desc font-12">获证时间：{{p.certificateTime | timeFmt}}</p>
+						<el-divider v-if="i < trainingList.length - 1"/>
+					</div>
+				</div>
+				<div class="white-box mt-10">
+					<div class="box-title">
+						<span class="box-title-text">联系方式</span>
+					</div>
+					<div class="pd-5" style="margin-top: 10px;">
+						<i class="el-icon-mobile-phone gray"></i>
+						<span class="my-desc font-12 inline-block">手机号</span>
+						<span class="font-12">{{ person.mobile }}</span>
+					</div>
+					<div class="pd-5">
+						<i class="el-icon-message gray"></i>
+						<span class="my-desc font-12 inline-block">邮箱</span>
+						<span class="font-12">{{ person.email }}</span>
+					</div>
+					<div class="pd-5">
+						<i class="el-icon-location-information gray"></i>
+						<span class="my-desc font-12 inline-block">地址</span>
+						<span class="font-12">{{ person.address }}</span>
+					</div>
+				</div>
+				<div class="footer">
+					———— 没有更多信息了 ————
+				</div>
+			</template>
+		</div>
+		
+		<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.11/vue.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/element-ui/2.13.2/index.js"></script>
+		<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/axios/0.19.2/axios.min.js"></script>
+		<script type="text/javascript">
+			[
+				'Button',
+				'Avatar',
+				'Icon',
+			  'Timeline',
+				'Image',
+				'Divider'
+			].forEach(name => Vue.component('El' + name, ELEMENT[name]))
+			
+			new Vue({
+				filters: {
+					timeFmt: function (value) {
+						let date = new Date(value);
+						let y = date.getFullYear();
+						let MM = date.getMonth() + 1;
+						MM = MM < 10 ? ('0' + MM) : MM;
+						let d = date.getDate();
+						d = d < 10 ? ('0' + d) : d;
+						let h = date.getHours();
+						h = h < 10 ? ('0' + h) : h;
+						let m = date.getMinutes();
+						m = m < 10 ? ('0' + m) : m;
+						let s = date.getSeconds();
+						s = s < 10 ? ('0' + s) : s;
+						return y + '-' + MM + '-' + d ;
+					}
+				},
+				data: {
+					person:{},
+					personDetail: {headPortrait:''},
+					circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+					name: 'epta',
+					phoneNum: '15677778888',
+					isMale: true,
+					workExperience: [{
+						timestamp: '2017.06.17 - 至今',
+						company: '华北电力集团',
+						content: '汽轮机调速系统检修高级',
+						level: '高级'
+					}, {
+						timestamp: '2012.11.05 - 2017.5.24',
+						company: '中国电力顾问集团华东电力设计院有限公司',
+						content: '热工仪表及控制装置试验',
+						level: '中级'
+					}],
+					educBackground: [{
+						degree: '研究生',
+						time: '2018-07-01 毕业于 上海交通大学'
+					}, {
+						degree: '本科',
+						time: '2015-07-01 毕业于 西安交通大学'
+					}, {
+						degree: '高中',
+						time: '2011-06-09 毕业于 华南师大附中'
+					}, {
+						degree: '初中',
+						time: '2009-06-17 毕业于 华南师大附中'
+					}],
+					awardList: [{
+						url: 'win.png',
+						title: '水轮发电机组管道安装',
+						level: '国家级',
+						type: '热工仪表自动装置检修',
+						grade: '高级技师',
+						rink: '优秀指导奖',
+						desc: 'XXXXXXXXXX',
+						date: '2020-01-20'
+					}, {
+						url: 'win.png',
+						title: '电网调度自动化厂站端调试检修',
+						level: '国家级',
+						type: '热工仪表自动装置检修',
+						grade: '高级技师',
+						rink: '优秀指导奖',
+						desc: 'XXXXXXXXXX',
+						date: '2019-11-17'
+					}],
+					trainingList: [{
+						url: 'win.png',
+						title: '2020年无人机培训',
+						timeRange: '2019-11-08 —— 2020-01-15',
+						scores: '优秀',
+						time: '2020-01-20'
+					}, {
+						url: 'win.png',
+						title: '2019年无人机培训',
+						timeRange: '2019-11-08 —— 2020-01-15',
+						scores: '优秀',
+						time: '2019-12-16'
+					}],
+					type:false,
+				},
+				created(){
+					this.type = !!this.getQueryString("type");
+				},
+				mounted() {
+					// !!this.type ?  this.getPerson() : this.getExpert();
+					this.getPerson();
+					this.getExpert()
+				},
+				methods:{
+					getExpert(){
+						let loginName= this.getQueryString("loginName");
+						axios.post('/rcfz/staff/getUserInfo', {
+							loginName
+						}).then(res=> {
+							console.log('person+',res);
+						   this.$set(this,'person',res.data.data)
+						}).catch(function (error) {
+							console.log(error);
+						});
+					},
+					getPerson(){
+						let loginName= this.getQueryString("loginName");
+						axios.post('/rcfz/InterfacesService/queryUserDetailsByLoginName', {loginName:loginName}).then(res=> {
+							console.log('personDetail+',res);
+						   this.$set(this,'personDetail',res.data.data)
+						}).catch(function (error) {
+							console.log(error);
+						});
+					},
+					getQueryString(name) {
+						var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+						var r = decodeURI(window.location.search).substr(1).match(reg);
+						if (r != null)
+						return unescape(r[2]);
+						return null;
+					}
+					
+				}
+			}).$mount('#app')
+		</script>
+	</body>
+</html>
